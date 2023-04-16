@@ -17,6 +17,22 @@ namespace GetResult
         }
         static string GetResults(string input)
         {
+            string result;
+            string correct = "abcdefghijklmnopqrstuvwxyz";
+            string notCorrect = "";
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (correct.IndexOf(input[i]) == -1)
+                {
+                    notCorrect += input[i];
+
+                }
+
+            }
+            if (notCorrect.Length > 0)
+            {
+                return "Не верные символы: " + notCorrect;
+            }
             if (input.Length % 2 == 0)
             {
                 int half = input.Length / 2;
