@@ -8,13 +8,50 @@ namespace GetResult
         {
             while (true)
             {
-                Console.WriteLine("Ввод: ");
+                Console.WriteLine("Input: ");
                 string input = Console.ReadLine();
                 string ouput = GetResults(input);
-                Console.WriteLine("Вывод: " + ouput);
+                Console.WriteLine("Output: " + ouput);
 
             }
         }
+        static string CountRepeatSymbols(string str)
+        {
+            string seached = "";
+            string witholdSymbols = str;
+            string newString;
+            int count;
+            char currentSearch;
+
+            while (true)
+            {
+
+                count = 0;
+                newString = "";
+                currentSearch = witholdSymbols[0];
+                foreach (char c in witholdSymbols)
+                {
+                    if (c == currentSearch)
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        newString += c;
+                    }
+                }
+                if (count > 1)
+                {
+                    seached += currentSearch + " - " + count + ", ";
+                }
+                witholdSymbols = newString;
+                if (newString == "")
+                {
+                    return seached;
+                }
+            }
+        }
+
         static string GetResults(string input)
         {
             string result;
@@ -31,7 +68,11 @@ namespace GetResult
             }
             if (notCorrect.Length > 0)
             {
-                return "Не верные символы: " + notCorrect;
+
+                return "Wrong Symbols: " + notCorrect;
+
+
+
             }
             if (input.Length % 2 == 0)
             {
@@ -44,17 +85,23 @@ namespace GetResult
                 char[] resultsSecond = second.ToCharArray();
                 Array.Reverse(resultsSecond);
                 string resultSecond = new string(resultsSecond);
-                string getresult = resultsFirst + resultSecond;
-                return getresult;
+                result = resultsFirst + resultSecond;
+
             }
             else
             {
                 char[] resultElse = input.ToCharArray();
                 Array.Reverse(resultElse);
                 string reversed = new string(resultElse);
-                string resultReverse = reversed + input;
-                return resultReverse;
+                result = reversed + input;
+
             }
+            string doubleSymbols = CountRepeatSymbols(result);
+            if (doubleSymbols != "")
+            {
+                Console.WriteLine("Count symbols " + doubleSymbols);
+            }
+            return result;
         }
     }
 }
