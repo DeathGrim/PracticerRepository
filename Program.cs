@@ -68,7 +68,11 @@ namespace GetResult
             }
             if (notCorrect.Length > 0)
             {
+
                 return "Wrong Symbols: " + notCorrect;
+
+
+
             }
             if (input.Length % 2 == 0)
             {
