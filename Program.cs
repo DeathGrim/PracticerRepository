@@ -40,7 +40,7 @@ namespace GetResult
                         newString += c;
                     }
                 }
-                if (count > 1)
+                if (count >= 1)
                 {
                     seached += currentSearch + " - " + count + ", ";
                 }
