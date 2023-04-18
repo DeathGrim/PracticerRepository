@@ -11,10 +11,12 @@ namespace GetResult
                 Console.WriteLine("Input: ");
                 string input = Console.ReadLine();
                 string ouput = GetResults(input);
-                Console.WriteLine("Output: " + ouput);
-
+                Console.WriteLine("Output: " + ouput );
+              
             }
         }
+        
+        
         static string CountRepeatSymbols(string str)
         {
             string seached = "";
@@ -51,8 +53,26 @@ namespace GetResult
                 }
             }
         }
+        static string Substringfind(string result)
+        {
+            string Symbols = "aeiouy";
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (Symbols.IndexOf(result[i]) != -1)
+                {
+                    for (int j = result.Length - 1; j >= i; j--)
+                    {
+                        if (Symbols.IndexOf(result[j]) != -1)
+                        {
+                            return result.Substring(i, j - i + 1);
+                        }
 
-        static string GetResults(string input)
+                    }
+                }
+            }
+            return "";
+        }
+            static string GetResults(string input)
         {
             string result;
             string correct = "abcdefghijklmnopqrstuvwxyz";
@@ -93,10 +113,12 @@ namespace GetResult
 
             }
             string doubleSymbols = CountRepeatSymbols(result);
+            string substr = Substringfind(result);
             if (doubleSymbols != "")
             {
                 Console.WriteLine("Count symbols " + doubleSymbols);
             }
+            Console.WriteLine("Substring: " + substr);
             return result;
         }
     }
