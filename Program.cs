@@ -1,125 +1,260 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace GetResult
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
+            string input;
+            string notvalid;
             while (true)
             {
-                Console.WriteLine("Input: ");
-                string input = Console.ReadLine();
-                string ouput = GetResults(input);
-                Console.WriteLine("Output: " + ouput );
-              
+
+                input = Console.ReadLine();
+                notvalid = task2(input);
+
+
+                if (notvalid.Length == 0)
+                {
+                    string result = task1(input);
+                    Console.WriteLine(result);
+                    task3(result);
+
+
+                    string processedInput = task1(input);
+                    Console.WriteLine(task4(result));
+                    string sortstr;
+
+                    Console.WriteLine("Select sorting \n 1. Quick \n 2. Tree ");
+
+
+                    switch (Console.ReadLine())
+                    {
+                        case "1":
+                            sortstr = QuickSort(result);
+                            break;
+                        case "2":
+                            sortstr = TreeSort(result);
+                            break;
+                        default:
+                            sortstr = "Sorting is not selected!";
+                            break;
+                    }
+
+                    Console.WriteLine(sortstr);
+
+                }
+                else
+                {
+
+                    Console.WriteLine("Invalid symbols are used: " + notvalid);
+
+                }
+
+            }
+
+        }
+
+        static string task1(string str)
+        {
+
+            if (str.Length % 2 == 0)
+            {
+                string half1 = str.Substring(0, str.Length / 2);
+                string life2 = str.Substring(str.Length / 2);
+
+                half1 = new string(half1.Reverse().ToArray());
+                life2 = new string(life2.Reverse().ToArray());
+
+                return half1 + life2;
+            }
+
+            string reversstr = new string(str.Reverse().ToArray());
+
+            return reversstr + str;
+
+
+
+        }
+    static void task3(string str)
+        {
+            Dictionary<char, int> charCount = new Dictionary<char, int>();
+            foreach (char c in str)
+            {
+                if (charCount.ContainsKey(c))
+                {
+                    charCount[c]++;
+                }
+                else
+                {
+                    charCount.Add(c, 1);
+                }
+            }
+
+            Console.WriteLine("The number of repetitions of each symbols:");
+            foreach (KeyValuePair<char, int> kvp in charCount)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
             }
         }
-        
-        
-        static string CountRepeatSymbols(string str)
+        static string task2(string str)
         {
-            string seached = "";
-            string witholdSymbols = str;
-            string newString;
-            int count;
-            char currentSearch;
+            string validsymbol = "abcdefghijklmnopqrstuvwxyz ";
+            string notvalidsymbol = "";
 
-            while (true)
+            for (int i = 0; i < str.Length; i++)
             {
-
-                count = 0;
-                newString = "";
-                currentSearch = witholdSymbols[0];
-                foreach (char c in witholdSymbols)
+                if (!validsymbol.Contains(str[i]))
                 {
-                    if (c == currentSearch)
+                    notvalidsymbol += str[i];
+
+
+                }
+
+            }
+
+            return notvalidsymbol;
+        }
+    
+
+ static string QuickSort(string str)
+        {
+            if (str.Length <= 1)
+            {
+                return str;
+            }
+
+            char pivot = str[str.Length / 2];
+            string left = "";
+            string middle = "";
+            string right = "";
+
+            foreach (char c in str)
+            {
+                if (c < pivot)
+                {
+                    left += c;
+                }
+                else if (c == pivot)
+                {
+                    middle += c;
+                }
+                else
+                {
+                    right += c;
+                }
+            }
+
+            return QuickSort(left) + middle + QuickSort(right);
+        }
+
+        static string task4(string str)
+        {
+            string vowels = "aeiouy";
+            string maxSubstr = "";
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (vowels.Contains(str[i]))
+                {
+                    for (int j = str.Length - 1; j > i; j--)
                     {
-                        count++;
+                        if (vowels.Contains(str[j]))
+                        {
+                            string substr = str.Substring(i, j - i + 1);
+                            if (substr.Length > maxSubstr.Length)
+                            {
+                                maxSubstr = substr;
+                            }
+                            i = j;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return maxSubstr;
+        }
+
+       
+
+        class TreeNode
+        {
+            public char Value;
+            public TreeNode Left;
+            public TreeNode Right;
+
+            public TreeNode(char value)
+            {
+                Value = value;
+            }
+
+            public void Insert(char value)
+            {
+                if (value < Value)
+                {
+                    if (Left == null)
+                    {
+                        Left = new TreeNode(value);
                     }
                     else
                     {
-                        newString += c;
+                        Left.Insert(value);
                     }
                 }
-                if (count >= 1)
+                else
                 {
-                    seached += currentSearch + " - " + count + ", ";
-                }
-                witholdSymbols = newString;
-                if (newString == "")
-                {
-                    return seached;
-                }
-            }
-        }
-        static string Substringfind(string result)
-        {
-            string Symbols = "aeiouy";
-            for (int i = 0; i < result.Length; i++)
-            {
-                if (Symbols.IndexOf(result[i]) != -1)
-                {
-                    for (int j = result.Length - 1; j >= i; j--)
+                    if (Right == null)
                     {
-                        if (Symbols.IndexOf(result[j]) != -1)
-                        {
-                            return result.Substring(i, j - i + 1);
-                        }
-
+                        Right = new TreeNode(value);
+                    }
+                    else
+                    {
+                        Right.Insert(value);
                     }
                 }
             }
-            return "";
-        }
-            static string GetResults(string input)
-        {
-            string result;
-            string correct = "abcdefghijklmnopqrstuvwxyz";
-            string notCorrect = "";
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (correct.IndexOf(input[i]) == -1)
-                {
-                    notCorrect += input[i];
 
+            public void Traverse(StringBuilder sb)
+            {
+                if (Left != null)
+                {
+                    Left.Traverse(sb);
                 }
 
-            }
-            if (notCorrect.Length > 0)
-            {
-                return "Wrong Symbols: " + notCorrect;
-            }
-            if (input.Length % 2 == 0)
-            {
-                int half = input.Length / 2;
-                string first = input.Substring(0, half);
-                string second = input.Substring(half);
-                char[] resultsFirstMeating = first.ToCharArray();
-                Array.Reverse(resultsFirstMeating);
-                string resultsFirst = new string(resultsFirstMeating);
-                char[] resultsSecond = second.ToCharArray();
-                Array.Reverse(resultsSecond);
-                string resultSecond = new string(resultsSecond);
-                result = resultsFirst + resultSecond;
+                sb.Append(Value);
 
+                if (Right != null)
+                {
+                    Right.Traverse(sb);
+                }
             }
-            else
-            {
-                char[] resultElse = input.ToCharArray();
-                Array.Reverse(resultElse);
-                string reversed = new string(resultElse);
-                result = reversed + input;
+        }
 
-            }
-            string doubleSymbols = CountRepeatSymbols(result);
-            string substr = Substringfind(result);
-            if (doubleSymbols != "")
+        static string TreeSort(string str)
+        {
+            if (str.Length <= 1)
             {
-                Console.WriteLine("Count symbols " + doubleSymbols);
+                return str;
             }
-            Console.WriteLine("Substring: " + substr);
-            return result;
+
+            TreeNode root = new TreeNode(str[0]);
+            for (int i = 1; i < str.Length; i++)
+            {
+                root.Insert(str[i]);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            root.Traverse(sb);
+
+            return sb.ToString();
         }
     }
 }
