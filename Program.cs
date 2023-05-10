@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace GetResult
 {
@@ -31,7 +26,7 @@ namespace GetResult
                     string processedInput = task1(input);
                     Console.WriteLine(task4(result));
                     string sortstr;
-
+                    Console.WriteLine(task6(result));
                     Console.WriteLine("Select sorting \n 1. Quick \n 2. Tree ");
 
 
@@ -83,27 +78,7 @@ namespace GetResult
 
 
         }
-    static void task3(string str)
-        {
-            Dictionary<char, int> charCount = new Dictionary<char, int>();
-            foreach (char c in str)
-            {
-                if (charCount.ContainsKey(c))
-                {
-                    charCount[c]++;
-                }
-                else
-                {
-                    charCount.Add(c, 1);
-                }
-            }
-
-            Console.WriteLine("The number of repetitions of each symbols:");
-            foreach (KeyValuePair<char, int> kvp in charCount)
-            {
-                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-            }
-        }
+       
         static string task2(string str)
         {
             string validsymbol = "abcdefghijklmnopqrstuvwxyz ";
@@ -122,9 +97,56 @@ namespace GetResult
 
             return notvalidsymbol;
         }
-    
+         static void task3(string str)
+         {
+            Dictionary<char, int> charCount = new Dictionary<char, int>();
+            foreach (char c in str)
+            {
+                if (charCount.ContainsKey(c))
+                {
+                    charCount[c]++;
+                }
+                else
+                {
+                    charCount.Add(c, 1);
+                }
+            }
 
- static string QuickSort(string str)
+            Console.WriteLine("The number of repetitions of each symbols:");
+            foreach (KeyValuePair<char, int> kvp in charCount)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+          
+         }
+             static string task4(string str)
+             {
+                        string vowels = "aeiouy";
+                        string maxSubstr = "";
+
+                        for (int i = 0; i < str.Length; i++)
+                        {
+                            if (vowels.Contains(str[i]))
+                            {
+                                for (int j = str.Length - 1; j > i; j--)
+                                {
+                                    if (vowels.Contains(str[j]))
+                                    {
+                                        string substr = str.Substring(i, j - i + 1);
+                                        if (substr.Length > maxSubstr.Length)
+                                        {
+                                            maxSubstr = substr;
+                                        }
+                                        i = j;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        return maxSubstr;
+             }
+        static string QuickSort(string str)
         {
             if (str.Length <= 1)
             {
@@ -155,33 +177,7 @@ namespace GetResult
             return QuickSort(left) + middle + QuickSort(right);
         }
 
-        static string task4(string str)
-        {
-            string vowels = "aeiouy";
-            string maxSubstr = "";
-
-            for (int i = 0; i < str.Length; i++)
-            {
-                if (vowels.Contains(str[i]))
-                {
-                    for (int j = str.Length - 1; j > i; j--)
-                    {
-                        if (vowels.Contains(str[j]))
-                        {
-                            string substr = str.Substring(i, j - i + 1);
-                            if (substr.Length > maxSubstr.Length)
-                            {
-                                maxSubstr = substr;
-                            }
-                            i = j;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return maxSubstr;
-        }
+       
 
        
 
@@ -255,6 +251,30 @@ namespace GetResult
             root.Traverse(sb);
 
             return sb.ToString();
+        }
+        static string task6(string inputString)
+        {
+
+            int randomNumber;
+            int stringLength = inputString.Length - 1;
+
+            try
+            {
+                WebClient client = new WebClient();
+                string url = "http://www.randomnumberapi.com/api/v1.0/randomnumber?max=" + stringLength;
+                string response = client.DownloadString(url);
+                randomNumber = int.Parse(response.Trim('[', ']'));
+            }
+            catch (WebException ex)
+            {
+                Console.WriteLine("An error occurred while getting the number with API! Generating a number locally");
+                Random random = new Random();
+                randomNumber = random.Next(stringLength);
+            }
+
+            Console.WriteLine("random number - " + (randomNumber + 1));
+
+            return inputString.Remove(randomNumber, 1);
         }
     }
 }
